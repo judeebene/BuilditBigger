@@ -17,3 +17,28 @@ allprojects {
         jcenter()
     }
 }
+
+task configure(dependsOn:":backend:appengineRun"){
+    project(":backend").afterEvaluate{
+        backend->backend.extensions.appengine.daemon = true
+    }
+
+
+
+}
+
+task runTest(dependsOn:":app:connectedAndroidTest"){
+    project(":backend").afterEvaluate{
+        backend->backend.extensions.appengine.daemon = false
+    }
+
+
+}
+
+runTest.mustRunAfter configure
+
+task shutDownServer(dependsOn:":backend:appengineStop"){
+
+}
+
+shutDownServer.mustRunAfter runTest
